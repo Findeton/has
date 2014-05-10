@@ -35,25 +35,38 @@ endif
 
 -include ../makefile.defs
 
+#COMPILER := g++
+LINUX_COMPILER := or1k-linux-uclibc-g++
+METAL_COMPILER := or1k-elf-g++
+
 # Add inputs and outputs from these tool invocations to the build variables 
 
 # All Target
-all: hass
+all: baremetal
 
 # Tool invocations
-hass: $(OBJS) $(USER_OBJS)
+linux: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++  -o "hass" $(OBJS) $(USER_OBJS) $(LIBS)
+	#g++  -o "has.cpp" $(OBJS) $(USER_OBJS) $(LIBS)
+	$(LINUX_COMPILER) -static -o has has.cpp
+	@echo 'Finished building target: $@'
+	@echo ' '
+
+bare_metal: $(OBJS) $(USER_OBJS)
+	@echo 'Building target: $@'
+	@echo 'Invoking: GCC C++ Linker'
+	#g++  -o "has.cpp" $(OBJS) $(USER_OBJS) $(LIBS)
+	$(METAL_COMPILER) -o has has.cpp
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(CC_DEPS)$(C++_DEPS)$(EXECUTABLES)$(C_UPPER_DEPS)$(CXX_DEPS)$(OBJS)$(CPP_DEPS)$(C_DEPS) hass
+	-$(RM) $(CC_DEPS)$(C++_DEPS)$(EXECUTABLES)$(C_UPPER_DEPS)$(CXX_DEPS)$(OBJS)$(CPP_DEPS)$(C_DEPS) has
 	-@echo ' '
 
-.PHONY: all clean dependents
+.PHONY: all clean dependents linux baremetal
 .SECONDARY:
 
 -include ../makefile.targets
